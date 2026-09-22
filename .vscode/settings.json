@@ -1,0 +1,17 @@
+{
+    "C_Cpp.default.compileCommands": "${workspaceFolder}/build/compile_commands.json",
+    "C_Cpp.default.includePath": [
+        "${workspaceFolder}/inc",
+        "${workspaceFolder}/src"
+    ],
+    "C_Cpp.default.compilerPath": "/opt/homebrew/bin/arm-none-eabi-gcc",
+    "C_Cpp.default.intelliSenseMode": "linux-gcc-arm",
+    "C_Cpp.default.cStandard": "c11",
+    "cortex-debug.armToolchainPath": "/opt/homebrew/bin",
+    "cortex-debug.gdbPath": "/opt/homebrew/bin/arm-none-eabi-gdb",
+    "cmake.generator": "Ninja",
+    "cmake.configureOnOpen": false,
+    "files.associations": {
+        "*.ld": "linkerscript"
+    }
+}

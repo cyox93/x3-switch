@@ -1,0 +1,6 @@
+r
+h
+loadfile build/x3-switch.elf
+r
+g
+exit

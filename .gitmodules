@@ -1,0 +1,6 @@
+[submodule "vendor/mm32f0140"]
+	path = vendor/mm32f0140
+	url = https://github.com/mm32/MM32F0140
+[submodule "vendor/segger_rtt"]
+	path = vendor/segger_rtt
+	url = https://github.com/SEGGERMicro/RTT
