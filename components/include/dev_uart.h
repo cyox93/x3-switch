@@ -12,8 +12,7 @@
  * The main loop blocks for the whole of every response and notification, and
  * a +KEY notification can be emitted while the ESP32-S3 is mid-command, so
  * polled receive would drop most of that command. Blocking transmit only
- * delays this firmware's own loop and costs nothing, and it also guarantees
- * the OK of AT+RST is fully on the wire before the core resets. */
+ * delays this firmware's own loop and costs nothing. */
 #ifndef X3_DEV_UART_H
 #define X3_DEV_UART_H
 
@@ -26,9 +25,20 @@
 void dev_uart_init(void);
 
 /* Blocking transmit. Both bail out rather than spin forever if the TX path
- * never drains — a mis-clocked UART must not wedge boot. */
+ * never drains — a mis-clocked UART must not wedge boot.
+ *
+ * They return once the last byte has been handed to the shifter, not once it
+ * has left the pin: CSR.TXEPT is "transmit buffer empty", and CSR.TXC is the
+ * separate "transmission complete". That is fine for back-to-back writes —
+ * the next byte simply queues — but anything that tears the pin down right
+ * afterwards must call dev_uart_flush() first. */
 void dev_uart_write_bytes(const uint8_t *data, size_t len);
 void dev_uart_write(const char *str);
+
+/* Wait until the last byte has actually left the pin. Needed before a reset;
+ * without it the final byte is still shifting and goes out as a framing
+ * error (measured: AT+RST emitted "OK\r" then 0xFF instead of "OK\r\n"). */
+void dev_uart_flush(void);
 
 /* Non-blocking receive: false when the RX register holds nothing. */
 bool dev_uart_read_byte(uint8_t *out);

@@ -300,11 +300,15 @@ static bool cmd_ver_query(char *args)
 static bool cmd_rst_exec(char *args)
 {
     (void)args;
-    /* The UART writer blocks until the transmitter is empty, so OK is fully
-     * on the wire before the core is reset. This is the only remote recovery
-     * path: x3_uart_board carries the two UART lines and nothing else, so the
-     * ESP32 has no way to pull NRST. */
     at_reply_ok();
+
+    /* The writer returns once the last byte reaches the shifter, so without
+     * this the reset tears the pin down mid-character: AT+RST put "OK\r"
+     * then 0xFF on the wire, losing the \n (measured, 4/4). This is the only
+     * remote recovery path — x3_uart_board carries the two UART lines and
+     * nothing else, so the ESP32 cannot pull NRST — and it has to leave a
+     * clean line behind it. */
+    dev_uart_flush();
     NVIC_SystemReset();
     return true;   /* not reached */
 }

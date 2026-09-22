@@ -146,6 +146,16 @@ void dev_uart_write(const char *str)
     }
 }
 
+void dev_uart_flush(void)
+{
+    uint32_t spin = UART_TX_SPIN_LIMIT;
+    while (UART_GetFlagStatus(DBG_UART, UART_CSR_TXC) == RESET) {
+        if (--spin == 0U) {
+            return;
+        }
+    }
+}
+
 bool dev_uart_read_byte(uint8_t *out)
 {
     if (s_rx_tail == s_rx_head) {
