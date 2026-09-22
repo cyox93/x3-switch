@@ -105,7 +105,8 @@ plus the vendor SDK sources baked directly into the `add_executable(...)` call.
 Layers (`components/include/` is on the global include path, so any C file can
 `#include "log.h"` etc):
 
-- **`components/core/`** — facades (`log.c` over SEGGER RTT, `clock.c` for the 48 MHz PLL).
+- **`components/core/`** — facades (`log.c` over SEGGER RTT, `clock.c` for the
+  48 MHz PLL, `tick.c` for the 1 ms SysTick time base every driver times off).
 - **`components/device/`** — per-peripheral drivers (`dev_led.c`, `dev_uart.c`, …).
   Each driver owns one piece of hardware and exposes a small API.
   `device.c::device_init()` brings them all up; `device.h` is an aggregate header
@@ -115,7 +116,12 @@ Layers (`components/include/` is on the global include path, so any C file can
   `RELAY_L1_PIN`, `DBG_UART_*`, …). Driver `.c` files should `#include "board.h"`
   and use these macros, not raw GPIO addresses. (clangd may warn `board.h` is an
   unused include — false positive; it is the project's HAL entry point.)
-- **`main/main.c`** — the application.
+- **`components/at/`** — the AT interface. `at_io.c` owns line framing and the
+  reply/notification helpers; `at_cmd.c` owns the command table and argument
+  parsing. `docs/at-protocol.md` is the contract both implement.
+- **`main/main.c`** — the application: one cooperative polling loop over
+  `at_poll()`, `dev_key_poll()` and `dev_led_tick()`. SysTick is the only
+  interrupt, so no driver state needs guarding.
 - **`vendor/`** — git submodules (`vendor/mm32f0140` is the MindMotion SDK;
   `vendor/segger_rtt` is SEGGER RTT). Treat as read-only; if you need a peripheral
   that isn't built yet, add its `hal_<peri>.c` to the `add_executable(...)` list in

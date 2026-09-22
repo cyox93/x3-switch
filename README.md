@@ -98,6 +98,18 @@ JLinkRTTClient
 Re-flashing while the GDB server runs needs `pkill -f JLinkGDBServerCL` first,
 or `JLinkExe` fights it for the probe.
 
+### Talking AT over a USB-serial adapter
+
+```sh
+screen /dev/cu.usbserial-XXXX 115200      # or any 115200 8N1 terminal
+```
+
+`+READY:x3-switch,<ver>` on the wire right after a reset confirms the link.
+**Both directions have to be wired**: on 2026-09-22 the bench adapter only had
+its RX hooked up, so every response looked correct while no command was ever
+received. If `AT` gets no `OK`, sample `GPIOA IDR` (`0x48000008`) over SWD while
+streaming bytes — PA3 staying HIGH means nothing is reaching the pin.
+
 Reading target state without stopping the firmware is often faster than a
 debugger session: `JLinkExe -autoconnect 1 -CommanderScript` with `mem32` reads
 live registers and RAM, and `sleep` between reads samples a value over time.
@@ -130,14 +142,16 @@ any C file can `#include "log.h"` etc.
 ├── startup/startup_mm32f0140.s   GCC vector table + Reset_Handler
 ├── docs/                         architecture, hardware, AT protocol
 ├── main/
-│   ├── main.c                    application (currently a bring-up harness)
+│   ├── main.c                    application: one cooperative polling loop
 │   └── system_mm32f0140.c        SystemInit override + SystemCoreClock
 ├── components/
 │   ├── include/                  public headers, auto-included project-wide
 │   │   ├── board.h               HAL umbrella + X3 pin map
-│   │   ├── clock.h  device.h  dev_led.h  dev_uart.h  log.h
-│   ├── core/                     log.c (RTT facade), clock.c (PLL)
-│   └── device/                   device.c aggregator + dev_*.c drivers
+│   │   ├── at.h  clock.h  tick.h  version.h  log.h
+│   │   └── device.h  dev_key.h  dev_led.h  dev_relay.h  dev_uart.h
+│   ├── core/                     log.c (RTT facade), clock.c (PLL), tick.c (SysTick)
+│   ├── device/                   device.c aggregator + dev_*.c drivers
+│   └── at/                       at_io.c (line framing), at_cmd.c (command table)
 ├── scripts/flash.jlink           J-Link Commander flash script
 └── vendor/                       MM32F0140 SDK + SEGGER RTT (git submodules)
 ```
@@ -149,6 +163,9 @@ any C file can `#include "log.h"` etc.
 
 **Adding a HAL peripheral**: append `${HAL_DIR}/Src/hal_<peri>.c` to the
 `add_executable(...)` list in the top-level CMakeLists.
+
+**Adding or changing an AT command**: update `docs/at-protocol.md` first — it
+is the contract — then the table in `components/at/at_cmd.c`.
 
 There are no tests — this is firmware that runs on hardware. Claims about
 behaviour are backed by register reads or observation on the bench.
