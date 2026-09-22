@@ -5,9 +5,15 @@
  * be initialised *after* clock_init_pll48mhz() — otherwise it latches the
  * 8 MHz HSI-reset divisor and every byte comes out at the wrong rate.
  *
- * Polling only: no interrupts, no ring buffer. Enough for boot banners and
- * for poking the ZS3L module by hand; revisit when a real Zigbee transport
- * needs framing. */
+ * Transmit is polled and blocking; receive is interrupt-driven into a ring
+ * buffer. The asymmetry is deliberate. This UART has a single receive holding
+ * register (CSR has RXAVL and an RXOERR overrun flag, no FIFO depth), so a
+ * byte not collected within one character time — 87 us at 115200 — is lost.
+ * The main loop blocks for the whole of every response and notification, and
+ * a +KEY notification can be emitted while the ESP32-S3 is mid-command, so
+ * polled receive would drop most of that command. Blocking transmit only
+ * delays this firmware's own loop and costs nothing, and it also guarantees
+ * the OK of AT+RST is fully on the wire before the core resets. */
 #ifndef X3_DEV_UART_H
 #define X3_DEV_UART_H
 
