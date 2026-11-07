@@ -146,9 +146,9 @@ board.h의 핀 매크로도 같이 지웠다. 마지막으로 동작했던 코�
 | 핀 | 원래 기능 | 새 담당 |
 |---|---|---|
 | PA4 · PA5 | 엔코더 B · A | ESP32-S3 |
-| PA6 | 용도 불명 (R77 + C12 RC) | (미사용) |
+| PA6 | 엔코더 공통 (R77 + C12 RC) | ESP32-S3 (LOW로 구동) |
 | PA7 | LED_RING_COLOR | ESP32-S3 |
-| PB2 · PB10 | LCD_DC · LCD_RES | ESP32-S3 |
+| PB2 · PB10 | LCD_RES · LCD_DC | ESP32-S3 |
 | PB12 · PB13 · PB15 | LCD CS · SCK · MOSI (SPI2) | ESP32-S3 |
 | PB14 | LED_RING_EN + LCD_BL | ESP32-S3 |
 | PA15 · PB3 · PB4 · PB5 | W25Q64JV SPI1 (Tuya UI 리소스) | 사용하지 않음 |
