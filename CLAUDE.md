@@ -30,8 +30,8 @@ warning. System-level design and the hardware reverse engineering live outside
 this repository; keep references to them out of committed files, since they
 do not resolve for anyone reading the repository. Note that the
 reverse-engineered LQFP48 pin map was **inferred from trace routing, not
-measured** — `BTN_K4 = PD0` is already known to be wrong in practice
-(see "K4 resets the MCU" below).
+measured** — `BTN_K4 = PD0` was doubted when the first board reset on K4, and
+has since been confirmed on a second board (see "K4 reset the first board" below).
 
 ## Build and flash
 
@@ -159,10 +159,11 @@ Layers (`components/include/` is on the global include path, so any C file can
    darkness comes from the rail (`LED_EN`, PB9), which is also `TIM17_CH1` and
    therefore a 1 kHz PWM dimmer.
 
-6. **K4 resets the MCU.** Pressing K4 holds the MM32 in reset — its net reaches
-   NRST. All four LEDs go white while held (every GPIO hi-Z) and the MCU boots on
-   release. K4 cannot be read as a button until the board is cut and rerouted;
-   see `docs/hardware.md` §2.1.1.
+6. **K4 reset the first board.** On the first unit K4's net reached NRST: all
+   four LEDs went white while held and the MCU booted on release, and a repair
+   attempt did not fix it. A second board does not reset on K4 (SysTick counter
+   sampled live for 54 s across 5 presses, never restarted) and reads K4 on PD0.
+   Treat it as a defect of that one unit; see `docs/hardware.md` §2.1.1.
 
 7. **SPI1 remap is reserved for the on-board W25Q64 flash** (PA15/PB3/PB4/PB5).
    That remap is all-or-nothing, so any future peripheral that wants SPI1's

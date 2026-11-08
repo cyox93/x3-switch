@@ -216,11 +216,12 @@ into the 4.7 kΩ base resistor, which turns the NPN on and lights the **white**
 LED. Channels are white or orange; darkness only comes from the rail
 (`LED_EN`, PB9), which is also `TIM17_CH1` and therefore a 1 kHz PWM dimmer.
 
-### K4 currently resets the MCU
+### K4 reset the MCU on the first board
 
-Pressing K4 holds the MM32 in reset — its net reaches NRST. All four LEDs go
-white while held (every GPIO hi-Z), and the MCU boots on release. **K4 cannot be
-read as a button until the board is cut and rerouted.** See
+On the first unit, pressing K4 held the MM32 in reset — its net reached NRST.
+All four LEDs went white while held, and the MCU booted on release. A second
+board does not show this and reads K4 on PD0 as `board.h` defines, so this is a
+defect of that one unit. If K4 resets your board, see
 [docs/hardware.md §2.1.1](docs/hardware.md) for the diagnosis and the repair
 checklist.
 
