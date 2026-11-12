@@ -64,9 +64,6 @@ JLinkExe -device MM32F0144C6P -if SWD -speed 4000 -autoconnect 1 \
 The device name must be **`MM32F0144C6P`** with the trailing `P` — `MM32F0144C6`
 raises an unknown-device dialog that needs a GUI click to dismiss.
 
-VSCode equivalents: tasks **Configure** / **Build** / **Flash**, and **F5**
-launches Cortex-Debug.
-
 ## Debug and logging
 
 SEGGER RTT (channel 0) is the only logging facility. Use
@@ -83,7 +80,7 @@ RTT_LOGI(TAG, "K%u down", channel);      // I (key): K3 down
 ```
 
 **`JLinkRTTClient` does not talk to the probe directly.** It needs a separate
-process bridging RTT — either a VSCode F5 session or a `JLinkGDBServerCL` you
+process bridging RTT — either a Cortex-Debug (VSCode) session or a `JLinkGDBServerCL` you
 started yourself. "RTT not found" means that bridge died.
 
 ```sh

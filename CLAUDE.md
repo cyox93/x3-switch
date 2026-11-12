@@ -50,7 +50,8 @@ JLinkExe -device MM32F0144C6P -if SWD -speed 4000 \
          -autoconnect 1 -CommanderScript scripts/flash.jlink
 ```
 
-VSCode equivalents: tasks `Configure` / `Build` / `Flash`, and **F5** launches Cortex-Debug.
+VSCode equivalents (local `.vscode/`, not tracked): tasks `Configure` / `Build` /
+`Flash`, and **F5** launches Cortex-Debug.
 
 There are no tests — this is firmware that runs on hardware. Back behavioural
 claims with evidence from the bench, not with reasoning alone.
