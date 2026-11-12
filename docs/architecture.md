@@ -25,7 +25,7 @@ ESP32-S3(main-board)를 연결**하고, 전면 패널 FFC를 CON1에서 빼서 �
 
 **LCD·엔코더·LED Ring을 구동하던 MM32 핀은 빈 CON1 커넥터로 이어질 뿐이라 전기적으로
 의미가 없다.** 해당 드라이버(`dev_lcd` · `dev_encoder` · `dev_led_ring`)는 2026-09-22에
-펌웨어에서 제거했다. 필요하면 커밋 `0a5f96d`에서 꺼내 쓸 수 있다 → [hardware.md](hardware.md) §3.
+펌웨어에서 제거했다 → [hardware.md](hardware.md) §3.
 
 ## 2. 보드 연결
 

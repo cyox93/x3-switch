@@ -42,7 +42,7 @@ to `x3_uart_board` in the ZS3L socket instead.
 ## Getting started
 
 ```sh
-git clone --recursive <repo> x3-switch && cd x3-switch
+git clone --recursive https://github.com/cyox93/x3-switch.git && cd x3-switch
 # (or, if already cloned without --recursive)
 git submodule update --init --recursive
 
@@ -206,8 +206,7 @@ Cortex-M0 has no hardware divider, so a busy-wait whose loop condition divides
 runs **~21× slow** — measured, not estimated. Derive all timing from a SysTick
 1 ms tick.
 
-Timing observations made before 2026-09-22 used that delay, so the numbers in
-the LCD bring-up history are ~20× longer than the code claims.
+Timing observations made before 2026-09-22 used that delay and are ~20× off.
 
 ### Button LEDs cannot be turned off per channel
 
@@ -229,3 +228,9 @@ checklist.
 
 The remap (PA15/PB3/PB4/PB5) is all-or-nothing, so any peripheral wanting SPI1's
 default mapping would lock out the flash. This firmware does not touch either.
+
+## License
+
+[MIT](LICENSE). The submodules under `vendor/` keep their own licenses: the
+MindMotion MM32F0140 SDK is BSD-3-Clause (its CMSIS part Apache-2.0), and
+SEGGER RTT ships under SEGGER's BSD-style license — see each `LICENSE.md`.
